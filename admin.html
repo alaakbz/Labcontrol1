@@ -1,0 +1,1209 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Espace Administrateur — PRODERMA LabControl</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- ✅ mammoth.js : conversion DOCX → HTML côté client -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<style>
+:root{
+  --brand-950:#0a1628;--brand-900:#0f2540;--brand-800:#153258;--brand-700:#1e3a68;--brand-600:#2b5488;
+  --brand-500:#427edb;--brand-400:#6b9de5;--brand-300:#a3c4ee;--brand-200:#d3e3f7;--brand-100:#e7effa;--brand-50:#f2f7fd;
+  --accent:#3b82f6;--accent-glow:rgba(59,130,246,0.35);
+  --bg-app:#f4f7fb;--bg-surface:#ffffff;--bg-subtle:#f7f9fc;
+  --border-light:#eaeef5;--border-subtle:#dde5ef;--border-medium:#c5d0dd;--border-focus:#3b82f6;
+  --text-main:#0f1f38;--text-secondary:#4a5b73;--text-muted:#74859d;--text-faint:#a3aec2;
+  --ok-fg:#0a7550;--ok-bg:#e8f7f0;--ok-border:#a4e0c4;
+  --ko-fg:#a01010;--ko-bg:#fdeeee;--ko-border:#f5bcbc;
+  --warn-fg:#8a5100;--warn-bg:#fff7e6;--warn-border:#fdd99a;
+  --info-fg:#1a4a8a;--info-bg:#eef4fc;--info-border:#c2d9f5;
+  --purple-fg:#5b21b6;--purple-bg:#f3edff;--purple-border:#d5c5f5;
+  --shadow-xs:0 1px 2px rgba(15,37,64,0.04);
+  --shadow-sm:0 2px 4px rgba(15,37,64,0.05);
+  --shadow-md:0 4px 12px rgba(15,37,64,0.07);
+  --shadow-lg:0 10px 28px rgba(15,37,64,0.10);
+  --radius-xs:6px;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:22px;
+  --topbar-h:68px;
+  --transition:all 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg-app);color:var(--text-main);line-height:1.5;min-height:100vh;overflow-x:hidden}
+code,.font-mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--border-focus);outline-offset:1px}
+::selection{background:var(--accent-glow);color:var(--brand-950)}
+
+.main-wrapper{width:100%;min-height:100vh;display:flex;flex-direction:column;max-width:1400px;margin:0 auto;padding:0 24px}
+
+.topbar{height:var(--topbar-h);background:rgba(255,255,255,0.9);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:30;border-radius:0 0 var(--radius-lg) var(--radius-lg);box-shadow:var(--shadow-sm)}
+.page-title-group h1{font-size:19px;font-weight:800;letter-spacing:-0.015em;color:var(--text-main)}
+.page-title-group .breadcrumbs{font-size:12px;color:var(--text-muted);margin-top:1px;font-weight:500}
+.topbar-actions{display:flex;align-items:center;gap:12px}
+.lab-clock{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-secondary);padding:6px 12px;border-radius:9px;background:var(--bg-subtle);border:1px solid var(--border-light);display:flex;align-items:center;gap:6px;font-weight:500}
+.admin-badge{padding:5px 12px;border-radius:9px;font-size:11px;font-weight:800;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;box-shadow:0 4px 10px rgba(124,58,237,0.35);letter-spacing:0.04em}
+.topbar-user{display:flex;align-items:center;gap:9px;padding:5px 10px 5px 5px;border-radius:999px;background:var(--bg-subtle);border:1px solid var(--border-light);transition:var(--transition);cursor:pointer}
+.topbar-user:hover{background:#eef2f8;border-color:var(--border-subtle)}
+.topbar-user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+.topbar-user-name{font-size:12px;font-weight:700;color:var(--text-main)}
+.topbar-user-role{font-size:10.5px;color:var(--text-muted)}
+.btn-icon-notif{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--bg-subtle);border:1px solid var(--border-light);color:var(--text-secondary);transition:var(--transition);position:relative}
+.btn-icon-notif:hover{background:#eef2f8;color:var(--brand-700)}
+.btn-icon-notif::after{content:"";position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:#ef4444;border:2px solid var(--bg-surface)}
+
+.content-body{padding:28px 8px 60px}
+
+.hero{background:linear-gradient(135deg,#0f2540 0%,#1e3a68 50%,#2b5488 100%);border-radius:var(--radius-xl);padding:32px 40px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:20px;color:#fff;position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+.hero::before{content:"";position:absolute;top:-60%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(96,165,250,0.35) 0%,transparent 65%);border-radius:50%;pointer-events:none}
+.hero::after{content:"";position:absolute;bottom:-50%;left:20%;width:300px;height:300px;background:radial-gradient(circle,rgba(59,130,246,0.28) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.hero-text{position:relative;z-index:2}
+.hero-text h2{font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
+.hero-text p{font-size:13.5px;color:rgba(255,255,255,0.78);font-weight:500;max-width:560px}
+.hero-stats{display:flex;gap:24px;position:relative;z-index:2}
+.hero-stat{text-align:right;padding-left:24px;border-left:1px solid rgba(255,255,255,0.15)}
+.hero-stat:first-child{border-left:none;padding-left:0}
+.hero-stat .num{font-size:28px;font-weight:800;line-height:1;letter-spacing:-0.02em}
+.hero-stat .lbl{font-size:10.5px;color:rgba(255,255,255,0.68);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-top:6px}
+
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.col-12{grid-column:span 12}
+.col-3{grid-column:span 3}
+.col-4{grid-column:span 4}
+.col-6{grid-column:span 6}
+.stat-card{background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;transition:var(--transition)}
+.stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--card-accent,#3b82f6),transparent);opacity:0;transition:var(--transition)}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--border-subtle)}
+.stat-card:hover::before{opacity:1}
+.stat-card-head{display:flex;align-items:center;justify-content:space-between}
+.stat-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#fff;flex-shrink:0;box-shadow:0 6px 14px rgba(0,0,0,0.12)}
+.stat-icon.blue{background:linear-gradient(135deg,#3b82f6,#1d4ed8);--card-accent:#3b82f6}
+.stat-icon.green{background:linear-gradient(135deg,#10b981,#047857);--card-accent:#10b981}
+.stat-icon.red{background:linear-gradient(135deg,#ef4444,#b91c1c);--card-accent:#ef4444}
+.stat-icon.purple{background:linear-gradient(135deg,#8b5cf6,#6d28d9);--card-accent:#8b5cf6}
+.stat-trend{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--ok-bg);color:var(--ok-fg);border:1px solid var(--ok-border)}
+.stat-info .num{font-size:28px;font-weight:800;line-height:1;letter-spacing:-0.03em;color:var(--text-main)}
+.stat-info .lbl{font-size:11.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:6px;font-weight:600}
+.stat-bar{height:5px;border-radius:3px;background:var(--bg-subtle);overflow:hidden}
+.stat-bar span{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--card-accent,#3b82f6),rgba(59,130,246,0.4));transition:width 0.8s cubic-bezier(0.4,0,0.2,1)}
+
+.lab-card{background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:18px}
+.lab-card-header{padding:18px 22px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;background:linear-gradient(180deg,#fcfdff,#f8fafc)}
+.lab-card-title{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:9px;color:var(--text-main)}
+.lab-card-title svg{color:var(--brand-600)}
+.lab-card-subtitle{font-size:11.5px;color:var(--text-muted);margin-top:3px;font-weight:500}
+.lab-card-body{padding:22px}
+
+.table-container{width:100%;overflow-x:auto;border-top:1px solid var(--border-light);background:var(--bg-surface)}
+.table-container::-webkit-scrollbar{height:8px}
+.table-container::-webkit-scrollbar-thumb{background:var(--border-medium);border-radius:4px}
+.lab-table{width:100%;border-collapse:collapse;text-align:left;font-size:12.5px}
+.lab-table th{background:var(--bg-subtle);color:var(--text-secondary);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:0.07em;padding:12px 18px;border-bottom:1px solid var(--border-subtle);white-space:nowrap;position:sticky;top:0;z-index:2}
+.lab-table td{padding:13px 18px;border-bottom:1px solid var(--border-light);vertical-align:middle}
+.lab-table tbody tr{transition:var(--transition)}
+.lab-table tbody tr:hover{background:#f8fafd}
+.lab-table tbody tr:last-child td{border-bottom:none}
+.lab-table .empty-cell{text-align:center;padding:44px 16px;color:var(--text-muted);font-size:13px}
+
+.status-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap;letter-spacing:0.01em;border:1px solid transparent}
+.status-pill::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;box-shadow:0 0 0 2px currentColor;opacity:0.9}
+.status-pill.ok{background:var(--ok-bg);color:var(--ok-fg);border-color:var(--ok-border)}
+.status-pill.ok::before{background:var(--ok-fg)}
+.status-pill.ko{background:var(--ko-bg);color:var(--ko-fg);border-color:var(--ko-border)}
+.status-pill.ko::before{background:var(--ko-fg)}
+.status-pill.wait{background:var(--warn-bg);color:var(--warn-fg);border-color:var(--warn-border)}
+.status-pill.wait::before{background:var(--warn-fg)}
+.status-pill.info{background:var(--info-bg);color:var(--info-fg);border-color:var(--info-border)}
+.status-pill.info::before{background:var(--info-fg)}
+.status-pill.purple{background:var(--purple-bg);color:var(--purple-fg);border-color:var(--purple-border)}
+.status-pill.purple::before{background:var(--purple-fg)}
+
+/* ✅ Badge « Importé par » — mis en évidence */
+.importer-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 12px;
+  border-radius:999px;
+  font-size:11.5px;
+  font-weight:700;
+  background:linear-gradient(135deg,#eef4fc,#dbeafe);
+  color:var(--info-fg);
+  border:1px solid var(--info-border);
+  white-space:nowrap;
+}
+
+/* ✅ Tableau Fichiers : largeur minimale pour éviter le masquage */
+#tab-files .lab-table{min-width:900px;}
+
+/* ✅ Rendu Word (mammoth.js) */
+#wordPreviewContainer h1,#wordPreviewContainer h2,#wordPreviewContainer h3{color:var(--text-main);margin:16px 0 8px}
+#wordPreviewContainer p{margin:8px 0;line-height:1.7}
+#wordPreviewContainer ul,#wordPreviewContainer ol{margin:8px 0 8px 24px}
+#wordPreviewContainer li{margin:4px 0}
+#wordPreviewContainer table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+#wordPreviewContainer table td,#wordPreviewContainer table th{border:1px solid var(--border-subtle);padding:6px 10px;text-align:left}
+#wordPreviewContainer img{max-width:100%;border-radius:6px;margin:8px 0}
+#wordPreviewContainer a{color:var(--accent);text-decoration:underline}
+
+.form-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.form-field{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:11.5px;font-weight:700;color:var(--text-secondary);letter-spacing:0.01em}
+.form-input,.form-select{width:100%;padding:10px 13px;background:var(--bg-surface);border:1px solid var(--border-medium);border-radius:10px;font-size:12.5px;color:var(--text-main);transition:var(--transition)}
+.form-input:focus,.form-select:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-glow)}
+.form-input::placeholder{color:var(--text-faint)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border-radius:10px;font-size:12.5px;font-weight:700;transition:var(--transition);cursor:pointer;letter-spacing:0.01em;border:1px solid transparent;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,#1e3a68,#2b5488);color:#fff;border-color:#152c50;box-shadow:0 4px 10px rgba(30,58,104,0.28)}
+.btn-primary:hover{background:linear-gradient(135deg,#274c87,#35629c);box-shadow:0 6px 16px rgba(30,58,104,0.35);transform:translateY(-1px)}
+.btn-secondary{background:var(--bg-surface);color:var(--text-secondary);border-color:var(--border-medium);box-shadow:var(--shadow-xs)}
+.btn-secondary:hover{background:var(--bg-subtle);border-color:var(--border-subtle)}
+.btn-danger{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border-color:#991b1b;box-shadow:0 4px 10px rgba(220,38,38,0.28)}
+.btn-danger:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(220,38,38,0.35)}
+.btn-success{background:linear-gradient(135deg,#059669,#047857);color:#fff;border-color:#065f46;box-shadow:0 4px 10px rgba(5,150,105,0.28)}
+.btn-success:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(5,150,105,0.35)}
+.btn-email{background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff;border-color:#155e75;box-shadow:0 4px 10px rgba(8,145,178,0.28)}
+.btn-email:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(8,145,178,0.4)}
+.btn-whatsapp{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border-color:#0e5c52;box-shadow:0 4px 10px rgba(37,211,102,0.28)}
+.btn-whatsapp:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(37,211,102,0.4)}
+.btn-gmail{background:linear-gradient(135deg,#ea4335,#c5221f);color:#fff;border-color:#a50e0e;box-shadow:0 4px 10px rgba(234,67,53,0.28)}
+.btn-gmail:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(234,67,53,0.4)}
+.btn-outlook{background:linear-gradient(135deg,#0078d4,#005a9e);color:#fff;border-color:#004578;box-shadow:0 4px 10px rgba(0,120,212,0.28)}
+.btn-outlook:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(0,120,212,0.4)}
+.btn-yahoo{background:linear-gradient(135deg,#720e9e,#4a096b);color:#fff;border-color:#38074f;box-shadow:0 4px 10px rgba(114,14,158,0.28)}
+.btn-yahoo:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(114,14,158,0.4)}
+.btn-sm{padding:6px 11px;font-size:11.5px;border-radius:8px}
+.btn-icon{padding:7px;border-radius:9px;color:var(--text-secondary);transition:var(--transition)}
+.btn-icon:hover{background:var(--bg-subtle);color:var(--brand-700)}
+
+.file-action-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;font-size:11.5px;font-weight:600;border-radius:8px;transition:var(--transition);white-space:nowrap;cursor:pointer;border:1px solid transparent}
+.file-action-btn.view{background:var(--bg-subtle);color:var(--brand-700);border-color:var(--border-medium)}
+.file-action-btn.view:hover{background:var(--brand-100);border-color:var(--brand-300);transform:translateY(-1px);box-shadow:0 3px 8px rgba(59,130,246,0.15)}
+.file-action-btn.download{background:linear-gradient(135deg,#1e3a68,#2b5488);color:#fff;border-color:#152c50;box-shadow:0 2px 6px rgba(30,58,104,0.25)}
+.file-action-btn.download:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(30,58,104,0.35)}
+
+.avatar-sm{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;display:inline-grid;place-items:center;font-size:11px;font-weight:800;margin-right:8px;flex-shrink:0;box-shadow:0 2px 6px rgba(59,130,246,0.3)}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border-light);margin-bottom:22px;overflow-x:auto;padding-bottom:1px}
+.tabs::-webkit-scrollbar{height:0}
+.tab-btn{padding:12px 18px;font-size:13px;font-weight:600;color:var(--text-muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:var(--transition);border-radius:8px 8px 0 0;position:relative}
+.tab-btn:hover{color:var(--brand-600);background:var(--bg-subtle)}
+.tab-btn.active{color:var(--brand-700);border-bottom-color:var(--brand-500);font-weight:700}
+.tab-btn.active::after{content:"";position:absolute;bottom:-2px;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--brand-500),var(--brand-400));border-radius:3px 3px 0 0;box-shadow:0 -3px 12px var(--accent-glow)}
+.tab-panel{display:none;animation:fadeIn 0.3s ease}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.search-wrapper{position:relative;display:inline-block}
+.search-wrapper input{padding-left:36px}
+.search-wrapper::before{content:"";position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2374859d' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat center;background-size:contain;pointer-events:none}
+
+.count-badge{display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:700;background:var(--bg-subtle);color:var(--text-secondary);border:1px solid var(--border-light)}
+
+/* MODAL APERÇU */
+.file-modal-overlay{position:fixed;inset:0;background:rgba(10,22,40,0.75);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:24px;animation:modalFadeIn 0.25s ease}
+.file-modal-overlay.active{display:flex}
+@keyframes modalFadeIn{from{opacity:0}to{opacity:1}}
+.file-modal{background:var(--bg-surface);border-radius:var(--radius-lg);width:100%;max-width:1100px;height:90vh;max-height:900px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.4);animation:modalSlideUp 0.3s cubic-bezier(0.34,1.3,0.64,1)}
+@keyframes modalSlideUp{from{opacity:0;transform:translateY(30px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.file-modal-header{padding:16px 22px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(180deg,#fcfdff,#f8fafc);flex-shrink:0;flex-wrap:wrap}
+.file-modal-title{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.file-modal-icon{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800;flex-shrink:0}
+.file-modal-icon.pdf{background:linear-gradient(135deg,#ef4444,#b91c1c)}
+.file-modal-icon.doc{background:linear-gradient(135deg,#3b82f6,#1d4ed8)}
+.file-modal-icon.xls{background:linear-gradient(135deg,#10b981,#047857)}
+.file-modal-icon.csv{background:linear-gradient(135deg,#06b6d4,#0e7490)}
+.file-modal-icon.json{background:linear-gradient(135deg,#8b5cf6,#6d28d9)}
+.file-modal-icon.other{background:linear-gradient(135deg,#64748b,#475569)}
+.file-modal-name{font-size:14px;font-weight:700;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-modal-meta{font-size:11.5px;color:var(--text-muted);margin-top:2px;display:flex;gap:12px;flex-wrap:wrap}
+.file-modal-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.file-modal-body{flex:1;overflow:auto;background:#eef2f8;display:flex;align-items:center;justify-content:center;padding:20px;position:relative}
+.file-modal-body iframe{width:100%;height:100%;border:none;border-radius:8px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.file-modal-body img{max-width:100%;max-height:100%;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);background:#fff}
+.file-modal-body pre{background:#fff;padding:24px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.08);width:100%;height:100%;overflow:auto;font-size:12.5px;line-height:1.6;font-family:'JetBrains Mono',monospace;white-space:pre-wrap;word-break:break-word;color:var(--text-main);margin:0}
+.file-modal-placeholder{text-align:center;color:var(--text-secondary);padding:40px;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);max-width:480px}
+.file-modal-placeholder svg{margin-bottom:16px;color:var(--brand-500)}
+.file-modal-placeholder h3{font-size:16px;font-weight:700;color:var(--text-main);margin-bottom:8px}
+.file-modal-placeholder p{font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
+
+/* ===== MODAL EMAIL ===== */
+.email-modal-overlay{position:fixed;inset:0;background:rgba(10,22,40,0.75);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;padding:24px;animation:modalFadeIn 0.25s ease}
+.email-modal-overlay.active{display:flex}
+.email-modal{background:var(--bg-surface);border-radius:var(--radius-lg);width:100%;max-width:600px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.4);animation:modalSlideUp 0.3s cubic-bezier(0.34,1.3,0.64,1)}
+.email-modal-header{padding:20px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,#fcfdff,#f8fafc)}
+.email-modal-title{font-size:16px;font-weight:800;color:var(--text-main);display:flex;align-items:center;gap:10px}
+.email-modal-title svg{color:#0891b2}
+.email-modal-body{padding:24px;display:flex;flex-direction:column;gap:16px}
+.email-modal-file-info{background:var(--bg-subtle);border:1px solid var(--border-light);border-radius:10px;padding:14px 16px;font-size:12.5px;color:var(--text-secondary);display:flex;align-items:center;gap:12px}
+.email-modal-file-info strong{color:var(--text-main)}
+.email-modal-provider-label{font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em}
+.email-modal-providers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.email-provider-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;font-size:13px;font-weight:700;color:#fff;transition:var(--transition);border:1px solid transparent;cursor:pointer;text-align:left}
+.email-provider-btn svg{flex-shrink:0}
+.email-provider-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.2)}
+.email-modal-footer{padding:16px 24px;background:var(--bg-subtle);border-top:1px solid var(--border-light);font-size:11.5px;color:var(--text-muted);line-height:1.6;display:flex;align-items:flex-start;gap:8px}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.stat-card{animation:slideUp 0.4s ease both}
+.stat-card:nth-child(1){animation-delay:0.02s}
+.stat-card:nth-child(2){animation-delay:0.06s}
+.stat-card:nth-child(3){animation-delay:0.10s}
+.stat-card:nth-child(4){animation-delay:0.14s}
+.lab-card{animation:slideUp 0.5s ease both}
+
+@media(max-width:1280px){
+  .col-3{grid-column:span 6}
+  .hero{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:1024px){
+  .col-4,.col-6{grid-column:span 12}
+  .main-wrapper{padding:0 16px}
+}
+@media(max-width:768px){
+  .topbar{padding:0 16px;gap:8px}
+  .topbar-user-name,.topbar-user-role{display:none}
+  .content-body{padding:16px 0 40px}
+  .col-3{grid-column:span 12}
+  .hero{padding:20px}
+  .hero-stats{width:100%;justify-content:space-between}
+  .page-title-group h1{font-size:16px}
+  .file-modal{height:95vh;max-width:none;border-radius:12px}
+  .file-modal-body{padding:10px}
+  .email-modal-providers{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="icon-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></symbol>
+  <symbol id="icon-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></symbol>
+  <symbol id="icon-email" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></symbol>
+  <symbol id="icon-whatsapp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></symbol>
+</svg>
+
+<div class="main-wrapper">
+  <header class="topbar">
+    <div class="page-title-group">
+      <h1>Espace Administrateur</h1>
+      <div class="breadcrumbs">Vue globale du système — Toutes les actions et tous les utilisateurs</div>
+    </div>
+    <div class="topbar-actions">
+      <div class="lab-clock">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span id="liveTime">--:--:--</span>
+      </div>
+      <button class="btn-icon-notif" title="Notifications">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+      </button>
+      <div class="admin-badge">ADMIN</div>
+      <div class="topbar-user">
+        <div class="topbar-user-avatar" id="topbarInitial">AD</div>
+        <div>
+          <div class="topbar-user-name" id="topbarName">Administrateur</div>
+          <div class="topbar-user-role" id="topbarRole">Administrateur</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="content-body">
+
+    <div class="hero">
+      <div class="hero-text">
+        <h2>Bienvenue, <span id="heroName">MS HBIB</span></h2>
+        <p>Retrouvez ici toutes les activités du laboratoire en temps réel.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num" id="heroAnalyses">0</div><div class="lbl">Analyses</div></div>
+        <div class="hero-stat"><div class="num" id="heroSamples">0</div><div class="lbl">Échantillons</div></div>
+        <div class="hero-stat"><div class="num" id="heroOos">0</div><div class="lbl">Alertes</div></div>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-bottom:22px">
+      <div class="col-3 stat-card">
+        <div class="stat-card-head">
+          <div class="stat-icon blue"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div>
+          <span class="stat-trend">+ Actif</span>
+        </div>
+        <div class="stat-info"><div class="num" id="statUsers">0</div><div class="lbl">Utilisateurs</div></div>
+        <div class="stat-bar"><span style="width:70%"></span></div>
+      </div>
+      <div class="col-3 stat-card">
+        <div class="stat-card-head">
+          <div class="stat-icon green"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31L4.36 19.34A2 2 0 0 0 6.1 22h11.8a2 2 0 0 0 1.74-2.66L14 9.31V2"></path></svg></div>
+          <span class="stat-trend">+ Stable</span>
+        </div>
+        <div class="stat-info"><div class="num" id="statAnalyses">0</div><div class="lbl">Analyses totales</div></div>
+        <div class="stat-bar"><span style="width:85%"></span></div>
+      </div>
+      <div class="col-3 stat-card">
+        <div class="stat-card-head">
+          <div class="stat-icon red"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg></div>
+          <span class="stat-trend" style="background:var(--ko-bg);color:var(--ko-fg);border-color:var(--ko-border)">⚠ Attention</span>
+        </div>
+        <div class="stat-info"><div class="num" id="statOos">0</div><div class="lbl">Anomalies / OOS</div></div>
+        <div class="stat-bar"><span style="width:35%"></span></div>
+      </div>
+      <div class="col-3 stat-card">
+        <div class="stat-card-head">
+          <div class="stat-icon purple"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg></div>
+          <span class="stat-trend">📁 Docs</span>
+        </div>
+        <div class="stat-info"><div class="num" id="statFiles">0</div><div class="lbl">Fichiers importés</div></div>
+        <div class="stat-bar"><span style="width:50%"></span></div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-actions" onclick="switchTab('tab-actions')">📋 Actions récentes</button>
+      <button class="tab-btn" data-tab="tab-users" onclick="switchTab('tab-users')">👥 Utilisateurs</button>
+      <button class="tab-btn" data-tab="tab-analyses" onclick="switchTab('tab-analyses')">🧪 Analyses</button>
+      <button class="tab-btn" data-tab="tab-files" onclick="switchTab('tab-files')">📁 Fichiers</button>
+      <button class="tab-btn" data-tab="tab-oos" onclick="switchTab('tab-oos')">⚠️ Anomalies</button>
+      <button class="tab-btn" data-tab="tab-samples" onclick="switchTab('tab-samples')">🧴 Échantillons</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-actions">
+      <div class="lab-card">
+        <div class="lab-card-header">
+          <div>
+            <div class="lab-card-title">Piste d'audit — Toutes les actions</div>
+            <div class="lab-card-subtitle">Historique complet des activités effectuées par tous les utilisateurs</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-wrapper"><input class="form-input" id="actionSearch" placeholder="Rechercher..." oninput="renderActions()" style="width:240px"></div>
+            <span id="actionsCount" class="count-badge">0 action(s)</span>
+          </div>
+        </div>
+        <div class="table-container" style="max-height:600px;overflow-y:auto">
+          <table class="lab-table">
+            <thead><tr><th>Date & Heure</th><th>Utilisateur</th><th>Action</th><th>Détail</th></tr></thead>
+            <tbody id="actionsBody"><tr><td colspan="4" class="empty-cell">Aucune action enregistrée.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-users">
+      <div class="lab-card">
+        <div class="lab-card-header">
+          <div>
+            <div class="lab-card-title">Gestion des utilisateurs</div>
+            <div class="lab-card-subtitle">Ajoutez, modifiez ou supprimez des utilisateurs habilités</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddUserModal()">+ Ajouter un utilisateur</button>
+        </div>
+        <div class="lab-card-body" style="border-bottom:1px solid var(--border-light);display:none" id="userFormContainer">
+          <div class="form-grid">
+            <div class="form-field" style="grid-column:span 3"><label class="form-label">Nom complet *</label><input class="form-input" id="newUserName" placeholder="Ex. Zekri Anfel"></div>
+            <div class="form-field" style="grid-column:span 2"><label class="form-label">Login *</label><input class="form-input font-mono" id="newUserLogin" placeholder="Ex. anfel"></div>
+            <div class="form-field" style="grid-column:span 2"><label class="form-label">Mot de passe *</label><input class="form-input font-mono" id="newUserPass" placeholder="••••••"></div>
+            <div class="form-field" style="grid-column:span 3"><label class="form-label">Rôle</label>
+              <select class="form-select" id="newUserRole"><option>Administrateur</option><option>Responsable QC</option><option>Analyste</option><option>Technicien</option><option>Auditeur</option></select>
+            </div>
+            <div class="form-field" style="grid-column:span 2;justify-content:flex-end;flex-direction:row;gap:6px;align-items:flex-end">
+              <button class="btn btn-success" onclick="saveUser()">Enregistrer</button>
+              <button class="btn btn-secondary" onclick="closeUserForm()">Annuler</button>
+            </div>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="lab-table">
+            <thead><tr><th>Utilisateur</th><th>Login</th><th>Rôle</th><th>Actions</th><th>Statut</th><th style="text-align:right">Actions</th></tr></thead>
+            <tbody id="usersBody"><tr><td colspan="6" class="empty-cell">Aucun utilisateur.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-analyses">
+      <div class="lab-card">
+        <div class="lab-card-header">
+          <div>
+            <div class="lab-card-title">Toutes les analyses</div>
+            <div class="lab-card-subtitle">Vue consolidée physico-chimie + microbiologie</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <select class="form-select" id="analysesFilterFam" onchange="renderAllAnalyses()" style="width:180px">
+              <option value="">Toutes les familles</option><option value="Physico-chimie">Physico-chimie</option><option value="Microbiologie">Microbiologie</option>
+            </select>
+            <div class="search-wrapper"><input class="form-input" id="analysesSearch" placeholder="Rechercher..." oninput="renderAllAnalyses()" style="width:200px"></div>
+            <span id="analysesCount" class="count-badge">0</span>
+          </div>
+        </div>
+        <div class="table-container" style="max-height:600px;overflow-y:auto">
+          <table class="lab-table">
+            <thead><tr><th>Date</th><th>N° Lot</th><th>Produit</th><th>Famille</th><th>Essai</th><th>Résultat</th><th>Statut</th><th>Analyste</th></tr></thead>
+            <tbody id="analysesBody"><tr><td colspan="8" class="empty-cell">Aucune analyse.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-files">
+      <div class="lab-card">
+        <div class="lab-card-header">
+          <div>
+            <div class="lab-card-title">Tous les fichiers importés</div>
+            <div class="lab-card-subtitle">Word, Excel, PDF… consultez, partagez et téléchargez les documents</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-wrapper"><input class="form-input" id="filesSearch" placeholder="Rechercher..." oninput="renderAllFiles()" style="width:240px"></div>
+            <span id="filesCount" class="count-badge">0 fichier(s)</span>
+          </div>
+        </div>
+        <div class="table-container" style="max-height:600px;overflow-y:auto">
+          <table class="lab-table">
+            <thead>
+              <tr>
+                <th>Nom du fichier</th>
+                <th>Type</th>
+                <th>Taille</th>
+                <th>Date</th>
+                <th>Importé par</th>
+                <th>Description</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="filesBody"><tr><td colspan="7" class="empty-cell">Aucun fichier.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-oos">
+      <div class="lab-card">
+        <div class="lab-card-header">
+          <div>
+            <div class="lab-card-title">Toutes les anomalies / OOS</div>
+            <div class="lab-card-subtitle">Registre global des déviations et investigations</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-wrapper"><input class="form-input" id="oosAdminSearch" placeholder="Rechercher..." oninput="renderAllOos()" style="width:200px"></div>
+            <span id="oosCount" class="count-badge">0</span>
+          </div>
+        </div>
+        <div class="table-container" style="max-height:600px;overflow-y:auto">
+          <table class="lab-table">
+            <thead><tr><th>Date</th><th>N° Lot</th><th>Produit</th><th>Type</th><th>Paramètre</th><th>Valeur</th><th>Criticité</th><th>Statut</th></tr></thead>
+            <tbody id="oosAdminBody"><tr><td colspan="8" class="empty-cell">Aucune anomalie.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-samples">
+      <div class="lab-card">
+        <div class="lab-card-header">
+          <div>
+            <div class="lab-card-title">Tous les échantillons</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-wrapper"><input class="form-input" id="samplesAdminSearch" placeholder="Rechercher..." oninput="renderAllSamples()" style="width:200px"></div>
+            <span id="samplesCount" class="count-badge">0</span>
+          </div>
+        </div>
+        <div class="table-container" style="max-height:600px;overflow-y:auto">
+          <table class="lab-table">
+            <thead><tr><th>ID</th><th>N° Lot</th><th>Produit</th><th>Date</th><th>Préleveur</th><th>Emplacement</th></tr></thead>
+            <tbody id="samplesAdminBody"><tr><td colspan="6" class="empty-cell">Aucun échantillon.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== MODAL APERÇU FICHIER ===== -->
+<div class="file-modal-overlay" id="fileModal" onclick="if(event.target === this) closeFileModal()">
+  <div class="file-modal">
+    <div class="file-modal-header">
+      <div class="file-modal-title">
+        <div class="file-modal-icon" id="fileModalIcon">FILE</div>
+        <div style="min-width:0;flex:1">
+          <div class="file-modal-name" id="fileModalName">—</div>
+          <div class="file-modal-meta">
+            <span id="fileModalType">—</span>
+            <span id="fileModalSize">—</span>
+            <span id="fileModalDate">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="file-modal-actions">
+        <button class="btn btn-email btn-sm" onclick="openEmailModal()" title="Envoyer par Email">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          Email
+        </button>
+        <button class="btn btn-whatsapp btn-sm" onclick="shareByWhatsApp()" title="Envoyer par WhatsApp">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          WhatsApp
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="downloadCurrentFileFromModal()" title="Télécharger">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Télécharger
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="openCurrentFileInNewTab()" title="Ouvrir dans un nouvel onglet">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          Nouvel onglet
+        </button>
+        <button class="btn-icon" onclick="closeFileModal()" title="Fermer" style="background:var(--bg-subtle)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+    <div class="file-modal-body" id="fileModalBody"></div>
+  </div>
+</div>
+
+<!-- ===== MODAL CHOIX EMAIL ===== -->
+<div class="email-modal-overlay" id="emailModal" onclick="if(event.target === this) closeEmailModal()">
+  <div class="email-modal">
+    <div class="email-modal-header">
+      <div class="email-modal-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        Envoyer par Email
+      </div>
+      <button class="btn-icon" onclick="closeEmailModal()" title="Fermer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="email-modal-body">
+      <div class="email-modal-file-info">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <div>
+          <strong id="emailModalFileName">—</strong><br>
+          <span id="emailModalFileInfo" style="font-size:11.5px;color:var(--text-muted)">—</span>
+        </div>
+      </div>
+
+      <div class="email-modal-provider-label">Choisissez votre service de messagerie :</div>
+      <div class="email-modal-providers">
+        <button class="email-provider-btn btn-gmail" onclick="sendViaGmail()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+          Gmail
+        </button>
+        <button class="email-provider-btn btn-outlook" onclick="sendViaOutlook()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M7.88 12.04q0 .45-.11.87-.1.41-.33.74-.22.33-.58.52-.37.2-.87.2t-.85-.2q-.35-.21-.57-.55-.22-.33-.33-.75-.1-.42-.1-.86t.1-.87q.1-.43.34-.76.22-.34.58-.55.36-.2.86-.2t.86.2q.35.21.57.55.22.34.33.76.11.42.11.86zM12.6 12.1v-1.63q0-.41-.07-.56-.07-.15-.45-.15-.4 0-.7.21v2.34q.18.12.39.12.29 0 .45-.13.16-.13.24-.39.08-.26.1-.63.02-.37.04-.7zm8.38-6.43v12.66H8.28V5.67h12.7zm-2.93 4.32h-1.85l-.9 3.4-.82-3.4h-1.78l1.5 5h1.7l1.15-3.9 1.17 3.9h1.72l1.5-5h-1.7l-.85 3.4z"/></svg>
+          Outlook
+        </button>
+        <button class="email-provider-btn btn-yahoo" onclick="sendViaYahoo()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm3.92 15.86l-.79 1.36h-2.35l2.24-3.86-2.2-3.79h2.36l1.14 2.06 1.14-2.06h2.36l-3.9 6.29zM8.86 9.57h2.35l-2.24 3.86 2.2 3.79H8.82L7.68 15.1l-1.14 2.12H4.18l3.9-6.29-2.35-4.06h2.35l1.4 2.4 1.38-2.4z"/></svg>
+          Yahoo
+        </button>
+        <button class="email-provider-btn btn-email" onclick="sendViaDefaultMail()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 6-10 7L2 6"></path></svg>
+          Mail par défaut
+        </button>
+      </div>
+    </div>
+    <div class="email-modal-footer">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      <div>
+        <strong>Le fichier sera téléchargé</strong> dans votre dossier Téléchargements.<br>
+        N'oubliez pas de le <strong>joindre en pièce jointe</strong> à votre email (icône 📎 dans Gmail/Outlook/Yahoo).
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DBKEY = "proderma_labcontrol_v1";
+const IDB_NAME = "proderma_files_db";
+const IDB_STORE = "files";
+
+let currentFile = null;
+let currentFileUrl = null;
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+function badge(s){
+  let c="wait",label=s;
+  if(s==="Conforme"||s==="Libéré"||s==="Succès"||s==="Actif") c="ok";
+  else if(s==="Non conforme"||s==="Bloqué"||s==="Critique"||s==="Majeure"||s==="Inactif") c="ko";
+  else if(s==="Mineure"||s==="En investigation"||s==="En quarantaine") c="wait";
+  return `<span class="status-pill ${c}">${esc(label||"—")}</span>`;
+}
+
+function formatSize(bytes){
+  if (bytes < 1024) return bytes + " o";
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + " Ko";
+  return (bytes/(1024*1024)).toFixed(2) + " Mo";
+}
+
+function getFileExt(name){ return (name.split('.').pop() || '').toLowerCase(); }
+function getFileTypeLabel(name){
+  const ext = getFileExt(name);
+  const map = {pdf:"PDF",doc:"Word",docx:"Word",xls:"Excel",xlsx:"Excel",csv:"CSV",json:"JSON",txt:"Texte"};
+  return map[ext] || ext.toUpperCase().substring(0,4) || "Fichier";
+}
+function getFileTypeClassFromName(name){
+  const ext = getFileExt(name);
+  if (ext === 'pdf') return 'pdf';
+  if (ext === 'doc' || ext === 'docx') return 'doc';
+  if (ext === 'xls' || ext === 'xlsx') return 'xls';
+  if (ext === 'csv') return 'csv';
+  if (ext === 'json') return 'json';
+  return 'other';
+}
+
+function loadUser(){
+  const u = sessionStorage.getItem("proderma_user");
+  if(!u){
+    document.getElementById("topbarName").textContent = "Administrateur";
+    document.getElementById("topbarRole").textContent = "Administrateur";
+    document.getElementById("topbarInitial").textContent = "AD";
+    document.getElementById("heroName").textContent = "MS HBIB";
+    return;
+  }
+  const user = JSON.parse(u);
+  const initiales = user.name.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
+  document.getElementById("topbarName").textContent = user.name;
+  document.getElementById("topbarRole").textContent = user.role;
+  document.getElementById("topbarInitial").textContent = initiales;
+  document.getElementById("heroName").textContent = user.name.split(" ")[0];
+}
+loadUser();
+
+setInterval(()=>{const d=new Date();const el=document.getElementById("liveTime");if(el)el.textContent=d.toLocaleTimeString('fr-FR',{hour12:false});},1000);
+
+function switchTab(id){
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add("active");
+  document.getElementById(id).classList.add("active");
+  if(id === "tab-files") renderAllFiles();
+}
+
+async function loadStats(){
+  const s = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+  document.getElementById("statUsers").textContent = (s.users||[]).length;
+  document.getElementById("statAnalyses").textContent = (s.analyses||[]).length;
+  document.getElementById("statOos").textContent = (s.oos||[]).length;
+  document.getElementById("heroAnalyses").textContent = (s.analyses||[]).length;
+  document.getElementById("heroSamples").textContent = (s.samples||[]).length;
+  document.getElementById("heroOos").textContent = (s.oos||[]).length;
+
+  try{
+    const db = await openIDB();
+    const files = await new Promise((resolve,reject)=>{
+      const tx = db.transaction(IDB_STORE,"readonly");
+      const req = tx.objectStore(IDB_STORE).getAll();
+      req.onsuccess = e => resolve(e.target.result);
+      req.onerror = e => reject(e.target.error);
+    });
+    document.getElementById("statFiles").textContent = files.length;
+  }catch(e){ document.getElementById("statFiles").textContent = "0"; }
+}
+
+function renderActions(){
+  const s = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+  const list = s.history || [];
+  const q = (document.getElementById("actionSearch")?.value || "").trim().toLowerCase();
+  const filtered = q ? list.filter(h => ((h.user||"") + " " + (h.action||"") + " " + (h.detail||"")).toLowerCase().includes(q)) : list;
+
+  const body = document.getElementById("actionsBody");
+  document.getElementById("actionsCount").textContent = `${filtered.length} action(s)`;
+  if(!filtered.length){ body.innerHTML = `<tr><td colspan="4" class="empty-cell">Aucune action enregistrée.</td></tr>`; return; }
+  body.innerHTML = filtered.slice(0, 200).map(h=>`
+    <tr>
+      <td><code style="font-size:11px">${esc(h.ts)}</code></td>
+      <td><span class="avatar-sm">${esc((h.user||"?").substring(0,2).toUpperCase())}</span>${esc(h.user || "—")}</td>
+      <td><span class="status-pill info">${esc(h.action || "—")}</span></td>
+      <td>${esc(h.detail || "—")}</td>
+    </tr>
+  `).join("");
+}
+
+function renderUsers(){
+  const s = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+  const users = s.users || [];
+  const body = document.getElementById("usersBody");
+  if(!users.length){ body.innerHTML = `<tr><td colspan="6" class="empty-cell">Aucun utilisateur.</td></tr>`; return; }
+  body.innerHTML = users.map((u,i)=>{
+    const actionsCount = (s.history||[]).filter(h=>h.user === u.login).length;
+    const initiales = (u.name||u.login||"?").split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
+    return `
+      <tr>
+        <td><span class="avatar-sm">${esc(initiales)}</span><strong>${esc(u.name || u.login)}</strong></td>
+        <td><code>${esc(u.login || "—")}</code></td>
+        <td><span class="status-pill purple">${esc(u.role || "—")}</span></td>
+        <td><strong>${actionsCount}</strong> action(s)</td>
+        <td>${badge(u.active === false ? "Inactif" : "Actif")}</td>
+        <td style="text-align:right">
+          <button class="btn btn-secondary btn-sm" onclick="resetUserPassword(${i})" title="Réinitialiser mot de passe">🔑</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteUser(${i})" style="margin-left:4px" title="Supprimer">✕</button>
+        </td>
+      </tr>`;
+  }).join("");
+}
+
+function openAddUserModal(){
+  document.getElementById("userFormContainer").style.display = "block";
+  document.getElementById("newUserName").value = "";
+  document.getElementById("newUserLogin").value = "";
+  document.getElementById("newUserPass").value = "";
+  document.getElementById("newUserRole").value = "Analyste";
+  document.getElementById("newUserName").focus();
+}
+function closeUserForm(){ document.getElementById("userFormContainer").style.display = "none"; }
+
+function saveUser(){
+  const name = document.getElementById("newUserName").value.trim();
+  const login = document.getElementById("newUserLogin").value.trim();
+  const pass = document.getElementById("newUserPass").value.trim();
+  const role = document.getElementById("newUserRole").value;
+  if(!name || !login || !pass){ alert("Nom, login et mot de passe sont obligatoires."); return; }
+  const s = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+  if(!s.users) s.users = [];
+  if(s.users.some(u=>u.login === login)){ alert("Ce login existe déjà."); return; }
+  s.users.push({name, login, pass, role, active:true});
+  if(!s.history) s.history = [];
+  const now = new Date(), pad = n=>String(n).padStart(2,'0');
+  const ts = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  s.history.unshift({ts, user:"admin", action:"Utilisateur créé", detail:`${name} (${login}) — ${role}`});
+  localStorage.setItem(DBKEY, JSON.stringify(s));
+  alert(`✅ Utilisateur créé : ${name}`);
+  closeUserForm();
+  renderUsers(); loadStats(); renderActions();
+}
+
+function deleteUser(idx){
+  const s = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+  const u = s.users[idx];
+  if(!u) return;
+  if(u.login === "admin"){ alert("Impossible de supprimer l'administrateur principal."); return; }
+  if(!confirm(`Confirmer la suppression de l'utilisateur "${u.name}" ?`)) return;
+  s.users.splice(idx, 1);
+  const now = new Date(), pad = n=>String(n).padStart(2,'0');
+  const ts = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  s.history.unshift({ts, user:"admin", action:"Utilisateur supprimé", detail:`${u.name} (${u.login})`});
+  localStorage.setItem(DBKEY, JSON.stringify(s));
+  renderUsers(); loadStats(); renderActions();
+}
+
+function resetUserPassword(idx){
+  const s = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+  const u = s.users[idx];
+  if(!u) return;
+  const newPass = prompt(`Nouveau mot de passe pour "${u.name}" :`, "");
+  if(!newPass) return;
+  u.pass = newPass;
+  const now = new Date(), pad = n=>String(n).padStart(2,'0');
+  const ts = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  s.history.unshift({ts, user:"admin", action:"Mot de passe réinitialisé", detail:`${u.name} (${u.login})`});
+  localStorage.setItem(DBKEY, JSON.stringify(s));
+  alert("✅ Mot de passe modifié.");
+  renderActions();
+}
+
+function renderAllAnalyses(){
+  const s = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+  let list = (s.analyses || []).slice();
+  const fam = document.getElementById("analysesFilterFam")?.value || "";
+  if(fam) list = list.filter(a => (a.family || "Physico-chimie") === fam);
+  const q = (document.getElementById("analysesSearch")?.value || "").trim().toLowerCase();
+  if(q) list = list.filter(a => ((a.lot||"") + " " + (a.product||"") + " " + (a.param||"") + " " + (a.test||"")).toLowerCase().includes(q));
+  document.getElementById("analysesCount").textContent = `${list.length} analyse(s)`;
+  const body = document.getElementById("analysesBody");
+  if(!list.length){ body.innerHTML = `<tr><td colspan="8" class="empty-cell">Aucune analyse.</td></tr>`; return; }
+  body.innerHTML = list.map(a=>{
+    const status = a.status || "À vérifier";
+    const cls = status === "Conforme" ? "ok" : (status === "Non conforme" ? "ko" : "wait");
+    const val = a.value || a.qual || "—";
+    const param = a.param || a.test || "—";
+    const fam = a.family || "Physico-chimie";
+    return `<tr>
+      <td>${esc(a.date || "—")}</td>
+      <td><code>${esc(a.lot || "—")}</code></td>
+      <td><strong>${esc(a.product || "—")}</strong></td>
+      <td><span class="status-pill info">${esc(fam)}</span></td>
+      <td>${esc(param)}</td>
+      <td><code><strong>${esc(val)}</strong> ${esc(a.unit || "")}</code></td>
+      <td><span class="status-pill ${cls}">${esc(status)}</span></td>
+      <td>${esc(a.analyst || "admin")}</td>
+    </tr>`;
+  }).join("");
+}
+
+function openIDB(){
+  return new Promise((resolve,reject)=>{
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if(!db.objectStoreNames.contains(IDB_STORE)){ db.createObjectStore(IDB_STORE, {keyPath:"id"}); }
+    };
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = e => reject(e.target.error);
+  });
+}
+
+async function getAllFiles(){
+  try{
+    const db = await openIDB();
+    return await new Promise((resolve,reject)=>{
+      const tx = db.transaction(IDB_STORE,"readonly");
+      const req = tx.objectStore(IDB_STORE).getAll();
+      req.onsuccess = e => resolve(e.target.result);
+      req.onerror = e => reject(e.target.error);
+    });
+  }catch(e){ return []; }
+}
+
+async function renderAllFiles(){
+  const files = await getAllFiles();
+  const q = (document.getElementById("filesSearch")?.value || "").trim().toLowerCase();
+  const filtered = q ? files.filter(f => ((f.name||"") + " " + (f.docType||"") + " " + (f.description||"") + " " + (f.uploadedBy||"")).toLowerCase().includes(q)) : files;
+  filtered.sort((a,b) => (b.id > a.id ? 1 : -1));
+  document.getElementById("filesCount").textContent = `${filtered.length} fichier(s)`;
+  const body = document.getElementById("filesBody");
+  if(!filtered.length){ body.innerHTML = `<tr><td colspan="7" class="empty-cell">Aucun fichier.</td></tr>`; return; }
+  body.innerHTML = filtered.map(f=>{
+    const typeClass = getFileTypeClassFromName(f.name);
+    const extLabel = getFileTypeLabel(f.name).substring(0,4).toUpperCase();
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:10px">
+        <div class="file-modal-icon ${typeClass}" style="width:34px;height:34px;font-size:10px;border-radius:8px">${esc(extLabel)}</div>
+        <strong style="font-size:12.5px">${esc(f.name)}</strong>
+      </div></td>
+      <td><span class="status-pill info">${esc(f.docType || "—")}</span></td>
+      <td>${formatSize(f.size || 0)}</td>
+      <td><code style="font-size:11px">${esc(f.uploadedAt || "—")}</code></td>
+      <td><span class="importer-pill">👤 ${esc(f.uploadedBy || "—")}</span></td>
+      <td><span style="font-size:11.5px;color:var(--text-secondary)">${esc(f.description || "—")}</span></td>
+      <td style="text-align:right;white-space:nowrap">
+        <button class="file-action-btn view" onclick="viewAdminFile('${f.id}')" title="Voir le fichier">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          Voir
+        </button>
+        <button class="file-action-btn download" onclick="downloadAdminFile('${f.id}')" title="Télécharger" style="margin-left:6px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Télécharger
+        </button>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+async function viewAdminFile(id){
+  try{
+    const files = await getAllFiles();
+    const f = files.find(x => x.id === id);
+    if(!f){ alert("Fichier introuvable."); return; }
+    currentFile = f;
+    const typeClass = getFileTypeClassFromName(f.name);
+    const extLabel = getFileTypeLabel(f.name).substring(0,4).toUpperCase();
+    document.getElementById("fileModalIcon").className = "file-modal-icon " + typeClass;
+    document.getElementById("fileModalIcon").textContent = extLabel;
+    document.getElementById("fileModalName").textContent = f.name;
+    document.getElementById("fileModalType").textContent = "📄 " + (f.docType || "Document");
+    document.getElementById("fileModalSize").textContent = "💾 " + formatSize(f.size || 0);
+    document.getElementById("fileModalDate").textContent = "🕒 " + (f.uploadedAt || "—");
+
+    if(currentFileUrl) URL.revokeObjectURL(currentFileUrl);
+    const blob = new Blob([f.data], {type: f.mimeType || "application/octet-stream"});
+    currentFileUrl = URL.createObjectURL(blob);
+
+    const body = document.getElementById("fileModalBody");
+    const ext = getFileExt(f.name);
+    const mime = (f.mimeType || "").toLowerCase();
+
+    if(ext === "pdf" || mime.includes("pdf")){
+      body.innerHTML = `<iframe src="${currentFileUrl}" type="application/pdf"></iframe>`;
+    }
+    else if(["jpg","jpeg","png","gif","webp","svg","bmp"].includes(ext) || mime.startsWith("image/")){
+      body.innerHTML = `<img src="${currentFileUrl}" alt="${esc(f.name)}">`;
+    }
+    else if(["txt","csv","json","xml","log","md"].includes(ext) || mime.startsWith("text/") || mime.includes("json")){
+      const text = await blob.text();
+      body.innerHTML = `<pre>${esc(text)}</pre>`;
+    }
+    else if(["doc","docx"].includes(ext)){
+      // ✅ Prévisualisation Word via mammoth.js
+      if(ext === "docx" && typeof mammoth !== "undefined"){
+        body.innerHTML = `<div style="width:100%;height:100%;overflow:auto;background:#fff;padding:24px;border-radius:8px">
+          <div id="wordPreviewContainer" style="max-width:900px;margin:0 auto;font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;color:#0f1f38">
+            <div style="text-align:center;color:#74859d;padding:40px">⏳ Conversion du document Word en cours…</div>
+          </div>
+        </div>`;
+        try{
+          const result = await mammoth.convertToHtml({arrayBuffer: f.data});
+          const container = document.getElementById("wordPreviewContainer");
+          if(container){
+            container.innerHTML = result.value || `<div style="text-align:center;color:#74859d;padding:40px">Le document est vide.</div>`;
+            if(result.messages && result.messages.length){
+              console.info("Mammoth messages :", result.messages);
+            }
+          }
+        } catch(err){
+          console.error("Erreur conversion Word :", err);
+          body.innerHTML = `<div class="file-modal-placeholder">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <h3>Impossible d'afficher ce document</h3>
+            <p>Le fichier est peut-être corrompu ou dans un format non pris en charge.<br>Utilisez le bouton <strong>Télécharger</strong> pour l'ouvrir dans Word.</p>
+          </div>`;
+        }
+      } else {
+        // ⚠️ Ancien format .doc : message
+        body.innerHTML = `<div class="file-modal-placeholder">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          <h3>Document Word (.doc — ancien format)</h3>
+          <p>Ce format ne peut pas être prévisualisé dans le navigateur.<br>Utilisez le bouton <strong>Télécharger</strong> pour l'ouvrir dans Microsoft Word.</p>
+        </div>`;
+      }
+    }
+    else if(["xls","xlsx"].includes(ext)){
+      body.innerHTML = `<div class="file-modal-placeholder">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <h3>Classeur Excel</h3>
+        <p>Les fichiers Excel ne peuvent pas être prévisualisés directement.<br>Utilisez les boutons d'action pour télécharger ou partager.</p>
+      </div>`;
+    }
+    else{
+      body.innerHTML = `<div class="file-modal-placeholder">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <h3>Fichier ${esc(ext.toUpperCase() || "inconnu")}</h3>
+        <p>Ce type de fichier ne peut pas être prévisualisé.</p>
+      </div>`;
+    }
+
+    document.getElementById("fileModal").classList.add("active");
+    document.body.style.overflow = "hidden";
+
+    const s = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+    if(!s.history) s.history = [];
+    const now = new Date(), pad = n=>String(n).padStart(2,'0');
+    const ts = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    const user = sessionStorage.getItem("proderma_user") ? JSON.parse(sessionStorage.getItem("proderma_user")) : {login:"admin"};
+    s.history.unshift({ts, user: user.login || "admin", action:"Fichier consulté", detail: f.name});
+    localStorage.setItem(DBKEY, JSON.stringify(s));
+  } catch(err){
+    console.error("Erreur visualisation :", err);
+    alert("Impossible d'ouvrir le fichier : " + err.message);
+  }
+}
+
+function closeFileModal(){
+  document.getElementById("fileModal").classList.remove("active");
+  document.body.style.overflow = "";
+  const body = document.getElementById("fileModalBody");
+  body.innerHTML = "";
+  if(currentFileUrl){ URL.revokeObjectURL(currentFileUrl); currentFileUrl = null; }
+  currentFile = null;
+}
+
+/* ===== MODAL EMAIL ===== */
+function openEmailModal(){
+  if(!currentFile){ alert("Aucun fichier."); return; }
+  document.getElementById("emailModalFileName").textContent = currentFile.name;
+  document.getElementById("emailModalFileInfo").textContent = `${currentFile.docType || "Document"} • ${formatSize(currentFile.size || 0)} • ${currentFile.uploadedAt || "—"}`;
+  document.getElementById("emailModal").classList.add("active");
+}
+
+function closeEmailModal(){
+  document.getElementById("emailModal").classList.remove("active");
+}
+
+/* Génère le contenu du mail */
+function buildEmailContent(){
+  const subject = `Fichier PRODERMA LabControl — ${currentFile.name}`;
+  const body = [
+    `Bonjour,`,
+    ``,
+    `Veuillez trouver ci-joint le fichier suivant depuis PRODERMA LabControl :`,
+    ``,
+    `📄 Nom : ${currentFile.name}`,
+    `📁 Type : ${currentFile.docType || "Document"}`,
+    `💾 Taille : ${formatSize(currentFile.size || 0)}`,
+    `🕒 Date d'import : ${currentFile.uploadedAt || "—"}`,
+    `👤 Importé par : ${currentFile.uploadedBy || "—"}`,
+    `📝 Description : ${currentFile.description || "—"}`,
+    ``,
+    `---`,
+    `Message généré automatiquement depuis PRODERMA LabControl V1.1`
+  ].join("\n");
+  return {subject, body};
+}
+
+/* Journaliser le partage */
+function logShare(action){
+  const s = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+  if(!s.history) s.history = [];
+  const now = new Date(), pad = n=>String(n).padStart(2,'0');
+  const ts = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  const user = sessionStorage.getItem("proderma_user") ? JSON.parse(sessionStorage.getItem("proderma_user")) : {login:"admin"};
+  s.history.unshift({ts, user: user.login || "admin", action: action, detail: currentFile.name});
+  localStorage.setItem(DBKEY, JSON.stringify(s));
+}
+
+/* ===== ENVOI VIA GMAIL ===== */
+function sendViaGmail(){
+  if(!currentFile) return;
+  downloadCurrentFileFromModal();
+  const {subject, body} = buildEmailContent();
+  const url = `https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(url, "_blank");
+  logShare("Partage par Gmail");
+  closeEmailModal();
+  setTimeout(() => alert("✅ Gmail ouvert dans un nouvel onglet.\n\n📎 N'oubliez pas de joindre le fichier téléchargé (icône trombone)."), 400);
+}
+
+/* ===== ENVOI VIA OUTLOOK ===== */
+function sendViaOutlook(){
+  if(!currentFile) return;
+  downloadCurrentFileFromModal();
+  const {subject, body} = buildEmailContent();
+  const url = `https://outlook.live.com/mail/0/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(url, "_blank");
+  logShare("Partage par Outlook");
+  closeEmailModal();
+  setTimeout(() => alert("✅ Outlook ouvert dans un nouvel onglet.\n\n📎 N'oubliez pas de joindre le fichier téléchargé (icône trombone)."), 400);
+}
+
+/* ===== ENVOI VIA YAHOO ===== */
+function sendViaYahoo(){
+  if(!currentFile) return;
+  downloadCurrentFileFromModal();
+  const {subject, body} = buildEmailContent();
+  const url = `https://compose.mail.yahoo.com/?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(url, "_blank");
+  logShare("Partage par Yahoo");
+  closeEmailModal();
+  setTimeout(() => alert("✅ Yahoo Mail ouvert dans un nouvel onglet.\n\n📎 N'oubliez pas de joindre le fichier téléchargé (icône trombone)."), 400);
+}
+
+/* ===== ENVOI VIA MAIL PAR DÉFAUT ===== */
+function sendViaDefaultMail(){
+  if(!currentFile) return;
+  downloadCurrentFileFromModal();
+  const {subject, body} = buildEmailContent();
+  const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+  logShare("Partage par Email par défaut");
+  closeEmailModal();
+  setTimeout(() => alert("📧 Client mail ouvert.\n\n⚠ Si rien ne s'ouvre, aucun client mail n'est configuré sur votre PC.\n\nEssayez plutôt Gmail, Outlook ou Yahoo.\n\n📎 Le fichier a été téléchargé, joignez-le à votre email."), 400);
+}
+
+/* ===== PARTAGER PAR WHATSAPP ===== */
+function shareByWhatsApp(){
+  if(!currentFile){ alert("Aucun fichier."); return; }
+  downloadCurrentFileFromModal();
+  const message = [
+    `📄 *Fichier PRODERMA LabControl*`,
+    ``,
+    `Nom : ${currentFile.name}`,
+    `Type : ${currentFile.docType || "Document"}`,
+    `Taille : ${formatSize(currentFile.size || 0)}`,
+    `Date : ${currentFile.uploadedAt || "—"}`,
+    `Importé par : ${currentFile.uploadedBy || "—"}`,
+    ``,
+    `_Message généré automatiquement_`
+  ].join("\n");
+  const whatsappLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  window.open(whatsappLink, "_blank");
+  logShare("Partage par WhatsApp");
+  setTimeout(() => alert("💬 WhatsApp ouvert.\n\n📎 Dans WhatsApp, cliquez sur 📎 (trombone) pour joindre le fichier téléchargé."), 400);
+}
+
+function downloadCurrentFileFromModal(){
+  if(!currentFile){ alert("Aucun fichier."); return; }
+  const blob = new Blob([currentFile.data], {type: currentFile.mimeType || "application/octet-stream"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = currentFile.name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function openCurrentFileInNewTab(){
+  if(!currentFileUrl){ alert("Aucun fichier."); return; }
+  window.open(currentFileUrl, "_blank");
+}
+
+async function downloadAdminFile(id){
+  const files = await getAllFiles();
+  const f = files.find(x=>x.id === id);
+  if(!f){ alert("Fichier introuvable."); return; }
+  const blob = new Blob([f.data], {type: f.mimeType || "application/octet-stream"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = f.name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  logShare("Fichier téléchargé");
+}
+
+function renderAllOos(){
+  const s = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+  let list = (s.oos || []).slice();
+  const q = (document.getElementById("oosAdminSearch")?.value || "").trim().toLowerCase();
+  if(q) list = list.filter(o => ((o.lot||"") + " " + (o.product||"") + " " + (o.param||"")).toLowerCase().includes(q));
+  document.getElementById("oosCount").textContent = `${list.length} anomalie(s)`;
+  const body = document.getElementById("oosAdminBody");
+  if(!list.length){ body.innerHTML = `<tr><td colspan="8" class="empty-cell">Aucune anomalie.</td></tr>`; return; }
+  body.innerHTML = list.map(o=>{
+    const clsSev = o.severity === "Majeure" || o.severity === "Critique" ? "ko" : "wait";
+    const clsStat = o.status === "Bloqué" ? "ko" : (o.status === "Libéré sous conditions" ? "info" : "wait");
+    return `<tr>
+      <td>${esc(o.date || "—")}</td>
+      <td><code>${esc(o.lot || "—")}</code></td>
+      <td><strong>${esc(o.product || "—")}</strong></td>
+      <td><span class="status-pill info">${esc(o.category || "OOS")}</span></td>
+      <td>${esc(o.param || "—")}</td>
+      <td><code style="color:var(--ko-fg);font-weight:700">${esc(o.value || "—")}</code></td>
+      <td><span class="status-pill ${clsSev}">${esc(o.severity || "—")}</span></td>
+      <td><span class="status-pill ${clsStat}">${esc(o.status || "—")}</span></td>
+    </tr>`;
+  }).join("");
+}
+
+function renderAllSamples(){
+  const s = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+  let list = (s.samples || []).slice();
+  const q = (document.getElementById("samplesAdminSearch")?.value || "").trim().toLowerCase();
+  if(q) list = list.filter(x => ((x.lot||"") + " " + (x.product||"") + " " + (x.sampler||"")).toLowerCase().includes(q));
+  document.getElementById("samplesCount").textContent = `${list.length} échantillon(s)`;
+  const body = document.getElementById("samplesAdminBody");
+  if(!list.length){ body.innerHTML = `<tr><td colspan="6" class="empty-cell">Aucun échantillon.</td></tr>`; return; }
+  body.innerHTML = list.map(x=>`
+    <tr>
+      <td><code>${esc(x.id || "—")}</code></td>
+      <td><code>${esc(x.lot || "—")}</code></td>
+      <td><strong>${esc(x.product || "—")}</strong></td>
+      <td>${esc(x.date || "—")}</td>
+      <td>${esc(x.sampler || "—")}</td>
+      <td>${esc(x.loc || "—")}</td>
+    </tr>`).join("");
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  loadStats();
+  renderActions();
+  renderUsers();
+  renderAllAnalyses();
+  renderAllFiles();
+  renderAllOos();
+  renderAllSamples();
+  setInterval(loadStats, 30000);
+
+  document.addEventListener("keydown", e => {
+    if(e.key === "Escape"){
+      if(document.getElementById("emailModal").classList.contains("active")) closeEmailModal();
+      else if(document.getElementById("fileModal").classList.contains("active")) closeFileModal();
+    }
+  });
+});
+</script>
+</body>
+</html>
